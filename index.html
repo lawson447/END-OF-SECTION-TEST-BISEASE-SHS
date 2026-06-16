@@ -1,0 +1,754 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bisease Senior High School – End-of-Section Test</title>
+ <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- ══════════════ SITE HEADER ══════════════ -->
+<header class="site-header">
+  <div class="logo-container">
+    <img src="images.png" alt="Bisease Senior High School Logo" class="school-logo" id="school-logo">
+    <div>
+      <div class="school-name">Bisease Senior High School</div>
+      <div class="exam-title">Computing · End-of-Section Test · Section 4</div>
+    </div>
+  </div>
+</header>
+
+<!-- ══════════════ PAGE: LOGIN ══════════════ -->
+<div id="page-login" class="page active">
+  <div class="login-wrap">
+    <div class="login-card">
+      <h2>Student Identification</h2>
+      <p class="sub">Enter your details to begin the examination. Ensure your name and class are correct before proceeding.</p>
+
+      <div class="field">
+        <label for="inp-name">Full Name</label>
+        <input type="text" id="inp-name" placeholder="e.g. Nana Lawson" autocomplete="off" spellcheck="false">
+      </div>
+      <div class="field">
+        <label for="inp-class">Class</label>
+        <input type="text" id="inp-class" placeholder="e.g. Form 1A" autocomplete="off">
+      </div>
+
+      <div id="login-err" class="err-msg">⚠ Please enter both your full name and class.</div>
+
+      <button class="btn-start" onclick="startExam()">Start Exam →</button>
+
+      <div class="notice">
+        <strong>Important Instructions:</strong><br>
+        • Duration: <strong>1 Hour 30 Minutes</strong><br>
+        • Answer <strong>All</strong> questions from Section A and <strong>All</strong> from Section B.<br>
+        • Do <strong>not</strong> switch browser tabs — this is monitored.<br>
+        • The exam closes automatically when time expires.
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ PAGE: EXAM ══════════════ -->
+<div id="page-exam" class="page">
+
+  <!-- sticky top bar -->
+  <div class="exam-top-bar">
+    <div class="student-badge">
+      Candidate: <strong id="bar-name">—</strong> &nbsp;|&nbsp; Class: <strong id="bar-class">—</strong>
+    </div>
+    <div class="timer-box">
+      <div class="timer-label">Time Left</div>
+      <div class="timer-val" id="timer-val">01:30:00</div>
+    </div>
+    <div class="set-badge">Question Set: <span id="bar-set">—</span></div>
+    <button class="logout-btn" onclick="logout()">🚪 Logout</button>
+  </div>
+
+  <div class="exam-body">
+    <div class="exam-header-block">
+      <h1>Computational Thinking and Programming Logic</h1>
+      <p>End-of-Section Test — Section 4</p>
+      <span class="duration">Duration: 1 Hour 30 Minutes &nbsp;|&nbsp; Total: 100 Marks</span>
+    </div>
+
+    <div class="instruction-box">
+      <strong>General Instructions:</strong> Answer <strong>ALL</strong> questions from <strong>Section A</strong> (Theory, 60 marks) and <strong>ALL</strong> questions from <strong>Section B</strong>
+       (Practical Programming, 40 marks). Read all questions carefully before answering. Show all workings where applicable.
+    </div>
+
+    <!-- Questions injected here -->
+    <div id="exam-content"></div>
+
+  </div>
+</div>
+
+<!-- ══════════════ PAGE: ENDED ══════════════ -->
+<div id="page-ended" class="page">
+  <div class="ended-wrap">
+    <div class="ended-card">
+      <div class="icon">✅</div>
+      <h2>Examination Closed</h2>
+      <p>Your examination time has elapsed. The paper has been automatically closed. Please hand over your answer booklet to the invigilator.</p>
+      <div class="student-info">
+        <div id="ended-info">—</div>
+      </div>
+      <button class="btn-start" style="margin-top:20px;" onclick="logout()">Return to Login</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ OVERLAY: TAB SWITCH ══════════════ -->
+<div id="overlay-tab" class="overlay">
+  <div class="ov-icon">⚠️</div>
+  <h2>Tab Switch Detected</h2>
+  <p>You navigated away from this examination window. This action has been recorded. Return focus to this window to continue your examination.</p>
+  <p class="warn" id="tab-warn-count">Warning 1 of 3</p>
+  <button class="logout-btn" style="margin-top:20px; padding:10px 30px; font-size:1rem;" onclick="logout()">Exit Exam</button>
+</div>
+
+<!-- ══════════════ OVERLAY: EXAM CLOSED ══════════════ -->
+<div id="overlay-closed" class="overlay">
+  <div class="ov-icon">🔒</div>
+  <h2>Examination Terminated</h2>
+  <p>You have switched tabs too many times. This examination session has been terminated and flagged for review. Please report to the invigilator immediately.</p>
+  <button class="logout-btn" style="margin-top:20px; padding:10px 30px; font-size:1rem;" onclick="logout()">Return to Login</button>
+</div>
+
+<script>
+// ══════════════════════════════════════════
+// DATA – All questions
+// ══════════════════════════════════════════
+
+const SECTION_A = {
+  Q1: {
+    num: "Question 1",
+    marks: "30 marks",
+    intro: `Adwoa is a Form 1 student at Accra Girls SHS. She has been assigned a project by her Computer Science teacher to design a solution that helps the school canteen calculate the total cost of a student's meal. The canteen sells three items: rice (GH₵5.00), stew (GH₵3.00), and water (GH₵1.50). Adwoa must plan, design, and implement this solution using the skills she has learnt in class.`,
+    parts: [
+      {
+        alpha: "(a)", label: "Adwoa begins her project by writing a step-by-step plan.",
+        subs: [
+          { roman: "(i)", text: "Define the term <strong>algorithm</strong> and state TWO (2) key characteristics it must have.", marks: "4 marks" },
+          { roman: "(ii)", text: "Write a pseudocode algorithm that prompts the canteen attendant to enter the number of portions of each item ordered by a student, calculates the total cost, and outputs the result.", marks: "3 marks" }
+        ]
+      },
+      {
+        alpha: "(b)", label: "Adwoa's teacher explains that an algorithm can be shown as a flowchart.",
+        subs: [
+          { roman: "(i)", text: "Name and describe FOUR (4) standard flowchart symbols, stating the shape used for each.", marks: "4 marks" },
+          { roman: "(ii)", text: "Draw a flowchart for the following algorithm: A program asks a student to enter their canteen account balance. If the balance is GH₵10.00 or more, output <em>'Sufficient balance'</em>; otherwise output <em>'Insufficient balance — please top up'</em>.", marks: "5 marks" },
+          { roman: "(iii)", text: "State the difference between pseudocode and a flowchart as tools for representing algorithms.", marks: "2 marks" }
+        ]
+      },
+      {
+        alpha: "(c)", label: "Before Adwoa writes her program, she learns about the Software Development Life Cycle (SDLC).",
+        subs: [
+          { roman: "(i)", text: "State what <strong>SDLC</strong> stands for and explain its purpose.", marks: "2 marks" },
+          { roman: "(ii)", text: "List and briefly describe FOUR (4) stages of the SDLC in the correct order.", marks: "4 marks" },
+          { roman: "(iii)", text: "At which SDLC stage would Adwoa use a wireframe? Explain what a wireframe is and why it is useful at that stage.", marks: "1 mark" },
+          { roman: "(iv)", text: "Adwoa's first version of the program produces wrong totals. Identify the type of error that may be responsible and explain how it differs from a syntax error.", marks: "2 marks" }
+        ]
+      },
+      {
+        alpha: "(d)", label: "Adwoa's teacher introduces her to testing.",
+        subs: [
+          { roman: "(i)", text: "Explain what is meant by <strong>normal data</strong>, <strong>extreme data</strong>, and <strong>exceptional data</strong> in the context of program testing, using the canteen program as an example for each.", marks: "3 marks" },
+          { roman: "(ii)", text: "After deployment, students report that the program does not work on older computers in the ICT lab. At which SDLC stage should this issue be addressed? Give a reason.", marks: "1 mark" }
+        ]
+      }
+    ]
+  },
+
+  Q2: {
+    num: "Question 2",
+    marks: "30 marks",
+    intro: `Kofi is a computing student at Kumasi SHTS who has been asked to build a student records management system for his school. The system must store each student's name, age, GPA (e.g. 3.75), and whether they are on the honour roll (True/False). Kofi must also organize data efficiently using appropriate data structures to allow fast retrieval, insertion, and deletion of records.`,
+    parts: [
+      {
+        alpha: "(a)", label: "Kofi needs to choose the correct data types for each piece of information.",
+        subs: [
+          { roman: "(i)", text: "Identify an appropriate Python data type (<code>int</code>, <code>float</code>, <code>str</code>, <code>bool</code>) for each of the following fields: student name, age, GPA, and honour roll status.", marks: "2 marks" },
+          { roman: "(ii)", text: "Write Python assignment statements for ONE student record using the four data types above.", marks: "2 marks" },
+          { roman: "(iv)", text: "Define the following term: <strong>Variable</strong>.", marks: "2 marks" }
+        ]
+      },
+      {
+        alpha: "(b)", label: "Kofi learns about data structures to help organize the student records.",
+        subs: [
+          { roman: "(i)", text: "Define the term <strong>data structure</strong> and explain why it is important in computing.", marks: "3 marks" },
+          { roman: "(ii)", text: "Using a diagram or description, differentiate between a <strong>linear</strong> and a <strong>non-linear</strong> data structure. Give TWO (2) examples of each.", marks: "6 marks" },
+          { roman: "(iv)", text: "List FOUR (4) common operations that can be performed on data structures.", marks: "2 marks" }
+        ]
+      },
+      {
+        alpha: "(c)", label: "The school's IT administrator wants to use a non-linear data structure to represent the administrative hierarchy.",
+        subs: [
+          { roman: "(i)", text: "Identify the type of non-linear data structure that best represents a school administrative hierarchy and explain why.", marks: "2 marks" },
+          { roman: "(ii)", text: "Draw a non-linear data structure diagram for a school with: Headmaster at the top, followed by Assistant Headmaster (Academic) and Assistant Headmaster (Administrative), and under each assistant, two departments of your choice.", marks: "5 marks" },
+          { roman: "(iii)", text: "State TWO (2) differences between a <strong>tree</strong> and a <strong>graph</strong> as non-linear data structures.", marks: "4 marks" },
+          { roman: "(iv)", text: "Give ONE (1) real-life computing application that uses a <strong>graph</strong> data structure and explain how it uses the graph.", marks: "2 marks" }
+        ]
+      },
+      {
+        alpha: "(d)", label: "Kofi compares stacks, queues, and linked lists for different parts of his system.",
+        subs: [
+          { roman: "(i)", text: "Explain the <strong>LIFO</strong> principle using a real-life example and state which data structure operates on this principle.", marks: "2 marks" },
+          { roman: "(ii)", text: "Explain the <strong>FIFO</strong> principle using a real-life example and state which data structure operates on this principle.", marks: "2 marks" },
+          {
+            roman: "(iii)", text: "Complete this comparison table for stacks and queues:", marks: "4 marks",
+            table: {
+              headers: ["Feature", "Stack", "Queue"],
+              rows: [
+                ["Principle", "", ""],
+                ["Add operation name", "", ""],
+                ["Remove operation name", "", ""],
+                ["One application in computing", "", ""]
+              ]
+            }
+          },
+          { roman: "(iv)", text: "Kofi wants to implement an <strong>undo</strong> feature for his student records system. Recommend the most suitable data structure and explain why it is appropriate.", marks: "3 marks" }
+        ]
+      }
+    ]
+  },
+
+  Q3: {
+    num: "Question 3",
+    marks: "30 marks",
+    intro: `Akosua is a computing teacher at Wesley Girls High School. She wants to store and manage end-of-term exam scores for her class of 10 students in Computing, Mathematics, and English. She plans to use Python arrays (lists) to organize this data, perform operations on the scores, and generate a report.`,
+    parts: [
+      {
+        alpha: "(a)", label: "",
+        subs: [
+          { roman: "(i)", text: "Define the term <strong>array data structure</strong>.", marks: "2 marks" },
+          { roman: "(ii)", text: "Akosua declares the following array:<br><code>cs_scores = [72, 85, 91, 60, 78, 88, 55, 94, 67, 80]</code><br>State the <strong>index</strong> of the value 91.", marks: "1 mark" },
+          { roman: "(iii)", text: "Write a Python statement to update the <strong>third element</strong> of <code>cs_scores</code> to 95.", marks: "1 mark" },
+          {
+            roman: "(iv)", text: "Write the Python code to:", marks: "5 marks",
+            subsubs: [
+              { num: "(a)", text: "find the number of elements in <code>cs_scores</code> using <code>len()</code>," },
+              { num: "(b)", text: "sort the array in ascending order," },
+              { num: "(c)", text: "print the sorted array." }
+            ]
+          }
+        ]
+      },
+      {
+        alpha: "(b)", label: "Akosua uses a 2D array to store all three subjects' scores.",
+        subs: [
+          {
+            roman: "(intro)", text: "The 2D array below stores scores for 5 students across 3 subjects (Computing, Mathematics, English):", marks: "",
+            table: {
+              headers: ["Subject", "Student 1", "Student 2", "Student 3", "Student 4", "Student 5"],
+              rows: [
+                ["Computing", "72", "85", "91", "60", "78"],
+                ["Mathematics", "68", "90", "75", "82", "55"],
+                ["English", "80", "74", "88", "65", "92"]
+              ]
+            }
+          },
+          { roman: "(i)", text: "Write the Python code to implement the above 2D array and name it <code>all_scores</code>.", marks: "2 marks" },
+          { roman: "(ii)", text: "Using index notation, write the Python statement to access <strong>Student 3's Mathematics score</strong>.", marks: "2 marks" },
+          { roman: "(iii)", text: "Student 4's English score was incorrectly entered as 65. The correct score is 71. Write the Python statement to update this value in the 2D array.", marks: "2 marks" },
+          { roman: "(iv)", text: "State TWO (2) advantages and ONE (1) disadvantage of using an array to store these scores.", marks: "3 marks" }
+        ]
+      },
+      {
+        alpha: "(c)", label: "Akosua has the following Computing scores for 6 students stored in a Python list:",
+        subs: [
+          {
+            roman: "", text: "<code>scores = [55, 78, 91, 63, 85, 70]</code><br><br>Write a Python program that performs ALL of the following operations, printing the result after each step:", marks: "7 marks",
+            subsubs: [
+              { num: "1.", text: "Print the original list." },
+              { num: "2.", text: "Append a new score of 88 to the end of the list." },
+              { num: "3.", text: "Remove the lowest score (55) using the <code>remove()</code> method." },
+              { num: "4.", text: "Sort the list in ascending order and print the sorted list." },
+              { num: "5.", text: "Reverse the sorted list and print it." },
+              { num: "6.", text: "Print the total number of scores using <code>len()</code>." },
+              { num: "7.", text: "Pop the last element from the list and print a message showing which score was removed." }
+            ]
+          }
+        ]
+      },
+      {
+        alpha: "(d)", label: "",
+        subs: [
+          {
+            roman: "(i)", text: "Akosua has two arrays:<br><code>groupA = [\"Ama\", \"Kwame\", \"Kojo\"]</code><br><code>groupB = [\"Akua\", \"Yaw\", \"Abena\"]</code><br>Write a Python program that:", marks: "4 marks",
+            subsubs: [
+              { num: "a.", text: "Prints both original arrays." },
+              { num: "b.", text: "Swaps the contents of <code>groupA</code> and <code>groupB</code> using a temporary variable and prints both arrays after the swap." },
+              { num: "c.", text: "Combines both groups into a single array called <code>all_students</code>." }
+            ]
+          },
+          { roman: "(ii)", text: "State the difference between the <code>=</code> operator and the <code>==</code> operator in Python, with one example each.", marks: "1 mark" },
+          { roman: "(iii)", text: "Explain the difference between a <strong>syntax error</strong> and a <strong>logic error</strong> in Python programming, and give one example of each.", marks: "2 marks" }
+        ]
+      }
+    ]
+  }
+};
+
+const SECTION_B = {
+  Q1: {
+    num: "Question 1",
+    marks: "20 marks",
+    intro: `Nana Yaa's second task is to write a Python program that generates and displays the multiplication table for a number entered by the user. The multiplication table should display results from 1 to 12.`,
+    requirements: [
+      "Use <code>input()</code> to prompt the user to enter a number.",
+      "Use a <code>for</code> loop with the <code>range()</code> function to iterate from 1 to 12.",
+      "Inside the loop, use the <code>*</code> operator to compute each product.",
+      "Print each line in the format: <em>\"5 x 3 = 15\"</em> (example for 5 times 3).",
+      "Add a check: if the user enters a number less than 1 or greater than 100, output an error message and do not display any table.",
+      "Add a suitable title and comments to your program."
+    ]
+  },
+  Q2: {
+    num: "Question 2",
+    marks: "20 marks",
+    intro: `Nana Yaa's third task is to write a Python program for the company's payroll system. The program should calculate an employee's net salary after tax deductions based on the following Ghana Revenue Authority (GRA) inspired tax bands:`,
+    table: {
+      headers: ["Monthly Gross Salary (GH₵)", "Tax Rate"],
+      rows: [
+        ["Below GH₵500", "0% (No tax)"],
+        ["GH₵500 – GH₵1,999", "10%"],
+        ["GH₵2,000 – GH₵4,999", "17.5%"],
+        ["GH₵5,000 and above", "25%"]
+      ]
+    },
+    requirements: [
+      "Use <code>input()</code> to accept the employee's name and gross monthly salary as a float.",
+      "Use <code>if/elif/else</code> to determine the applicable tax rate.",
+      "Use arithmetic operators to calculate tax amount and net salary (gross – tax).",
+      "Output a formatted payslip showing: employee name, gross salary, tax rate (%), tax deducted, and net salary.",
+      "Use a <code>while</code> loop to allow the user to calculate salaries for multiple employees until they type <strong>'no'</strong> when asked to continue.",
+      "Validate that the salary entered is not negative; if it is, display an error message.",
+      "Add appropriate comments throughout your program."
+    ]
+  },
+  Q3: {
+    num: "Question 3",
+    marks: "20 marks",
+    intro: `Nana Yaa must write a Python program that asks a student to enter their exam score (0–100) and outputs the corresponding grade and remark using the WAEC grading system below:`,
+    table: {
+      headers: ["Score Range", "Grade", "Remark"],
+      rows: [
+        ["75 – 100", "A1", "Excellent"],
+        ["70 – 74", "B2", "Very Good"],
+        ["65 – 69", "B3", "Good"],
+        ["60 – 64", "C4", "Credit"],
+        ["55 – 59", "C5", "Credit"],
+        ["50 – 54", "C6", "Credit"],
+        ["45 – 49", "D7", "Pass"],
+        ["40 – 44", "E8", "Pass"],
+        ["0 – 39", "F9", "Fail"]
+      ]
+    },
+    requirements: [
+      "Use <code>input()</code> to accept the student's score as an integer.",
+      "Use <code>if/elif/else</code> statements to determine the grade and remark.",
+      "If the score is below 0 or above 100, print an appropriate error message.",
+      "Output the score, grade, and remark in a formatted sentence.",
+      "Add appropriate comments to explain your code."
+    ],
+    partB: {
+      intro: "A librarian keeps a list of books available in the school library. Write a Python program that:",
+      steps: [
+        "Creates a list containing five book titles.",
+        "Displays the list.",
+        "Adds a new title using <code>append()</code>.",
+        "Updates the third title.",
+        "Removes the last title using <code>pop()</code>.",
+        "Reverses the sorted list.",
+        "Displays the final list and the total number of books."
+      ]
+    }
+  }
+};
+
+// ══════════════════════════════════════════
+// QUESTION SETS - Updated to match requirements
+// ══════════════════════════════════════════
+const SETS = [
+  { label: "Set A", secA: ["Q1","Q3"], secB: ["Q2","Q3"] },  // First 20 students
+  { label: "Set B", secA: ["Q2","Q3"], secB: ["Q2","Q1"] },  // Next 20 students (refresh)
+  { label: "Set C", secA: ["Q1","Q2"], secB: ["Q2","Q1"] }   // Next 20 students (refresh again)
+];
+
+// ══════════════════════════════════════════
+// PERSISTENT STATE (localStorage)
+// ══════════════════════════════════════════
+const STORAGE_KEY = "bisease_exam_v2";
+
+function loadState() {
+  try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; } catch(e) { return {}; }
+}
+function saveState(s) {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(s));
+}
+
+// ══════════════════════════════════════════
+// GLOBALS
+// ══════════════════════════════════════════
+let timerInterval = null;
+let secondsLeft = 90 * 60; // 1h 30m
+let tabSwitchCount = 0;
+const MAX_TAB_WARNINGS = 3;
+let examActive = false;
+let currentStudent = null;
+
+// ══════════════════════════════════════════
+// START EXAM
+// ══════════════════════════════════════════
+function startExam() {
+  const name  = document.getElementById("inp-name").value.trim();
+  const cls   = document.getElementById("inp-class").value.trim();
+  const errEl = document.getElementById("login-err");
+
+  if (!name || !cls) { errEl.style.display = "block"; return; }
+  errEl.style.display = "none";
+
+  const key = normalizeKey(name, cls);
+  const state = loadState();
+
+  let setIndex;
+  let savedSeconds = null;
+
+  // Check if student exists in the system
+  const isExistingStudent = state.students && state.students[key];
+
+  if (isExistingStudent) {
+    // RETURNING student – restore their set and time
+    const s = state.students[key];
+    setIndex = s.setIndex;
+    savedSeconds = s.secondsLeft;
+    if (s.terminated) {
+      showEnded(name, cls, SETS[setIndex].label, "Terminated");
+      return;
+    }
+  } else {
+    // NEW STUDENT - determine which set to assign
+    // Get total registered students count
+    const totalStudents = state.totalCount || 0;
+    
+    // Determine set based on totalStudents count
+    if (totalStudents < 20) {
+      setIndex = 0; // Set A: Q1,Q3 and Q2,Q3
+    } else if (totalStudents < 40) {
+      setIndex = 1; // Set B: Q2,Q3 and Q2,Q1
+    } else {
+      setIndex = 2; // Set C: Q1,Q2 and Q2,Q1
+    }
+
+    if (!state.students) state.students = {};
+    state.students[key] = { setIndex, secondsLeft: 90 * 60, terminated: false };
+    state.totalCount = (state.totalCount || 0) + 1;
+    saveState(state);
+  }
+
+  currentStudent = { name, cls, key, setIndex, isNew: !isExistingStudent };
+
+  // restore time
+  const st = loadState();
+  secondsLeft = st.students[key].secondsLeft || 90 * 60;
+
+  // populate top bar
+  document.getElementById("bar-name").textContent  = name;
+  document.getElementById("bar-class").textContent = cls;
+  document.getElementById("bar-set").textContent   = SETS[setIndex].label;
+
+  // render questions
+  renderExam(setIndex);
+
+  // switch pages
+  showPage("page-exam");
+  examActive = true;
+
+  // start timer
+  startTimer(key);
+  // anti-tab
+  setupAntiTab();
+}
+
+function normalizeKey(name, cls) {
+  return (name.toLowerCase().replace(/\s+/g,"_") + "__" + cls.toLowerCase().replace(/\s+/g,"_"));
+}
+
+// ══════════════════════════════════════════
+// RENDER EXAM CONTENT
+// ══════════════════════════════════════════
+function renderExam(setIndex) {
+  const set = SETS[setIndex];
+  const container = document.getElementById("exam-content");
+  let html = "";
+
+  // ─ SECTION A ─
+  html += sectionLabel("SECTION A – THEORY", "Answer TWO questions", "60 Marks");
+  set.secA.forEach(qKey => {
+    html += renderSectionAQuestion(SECTION_A[qKey]);
+  });
+
+  // ─ SECTION B ─
+  html += sectionLabel("SECTION B – PRACTICAL PROGRAMMING", "Answer TWO questions", "40 Marks");
+  set.secB.forEach(qKey => {
+    html += renderSectionBQuestion(SECTION_B[qKey]);
+  });
+
+  container.innerHTML = html;
+}
+
+function sectionLabel(title, info, marks) {
+  return `<div class="section-label">
+    <span class="tag">${title}</span>
+    <span class="line"></span>
+    <span class="section-info">${info} &nbsp;|&nbsp; ${marks}</span>
+  </div>`;
+}
+
+function renderSectionAQuestion(q) {
+  let html = `<div class="q-card">
+    <div class="q-card-head">
+      <span class="q-num">${q.num}</span>
+      <span class="q-marks">${q.marks}</span>
+    </div>
+    <div class="q-card-body">`;
+
+  if (q.intro) {
+    html += `<div class="q-intro">${q.intro}</div>`;
+  }
+
+  q.parts.forEach(part => {
+    html += `<div class="sub-q">
+      <div class="sub-q-label"><span class="alpha">${part.alpha}</span> ${part.label}</div>`;
+
+    part.subs.forEach(sub => {
+      if (sub.roman === "(intro)") {
+        // intro row (table only)
+        html += `<div class="sub-q-text" style="margin-top:10px">${sub.text}</div>`;
+        if (sub.table) html += renderTable(sub.table, "28px");
+        return;
+      }
+
+      html += `<div class="sub-sub-q">
+        <div class="ssq-row">
+          <span class="ssq-num">${sub.roman}</span>
+          <span>${sub.text} ${sub.marks ? `<span class="marks-pill">${sub.marks}</span>` : ""}</span>
+        </div>`;
+
+      if (sub.table) html += renderTable(sub.table, "0");
+      if (sub.subsubs) {
+        sub.subsubs.forEach(ss => {
+          html += `<div class="ssq-row" style="margin-left:22px">
+            <span class="ssq-num" style="color:var(--muted)">${ss.num}</span>
+            <span>${ss.text}</span>
+          </div>`;
+        });
+      }
+      html += `</div>`;
+    });
+
+    html += `</div>`;
+  });
+
+  html += `</div></div>`;
+  return html;
+}
+
+function renderSectionBQuestion(q) {
+  let html = `<div class="q-card">
+    <div class="q-card-head">
+      <span class="q-num">${q.num}</span>
+      <span class="q-marks">${q.marks}</span>
+    </div>
+    <div class="q-card-body">
+      <div class="q-intro">${q.intro}</div>`;
+
+  if (q.table) html += renderTable(q.table, "0");
+
+  if (q.requirements && q.requirements.length) {
+    html += `<div class="sub-q">
+      <div class="sub-q-label"><span class="alpha">Requirements</span></div>
+      <div class="sub-q-text">`;
+    q.requirements.forEach((r, i) => {
+      html += `<div class="ssq-row"><span class="ssq-num">${i+1}.</span><span>${r}</span></div>`;
+    });
+    html += `</div></div>`;
+  }
+
+  if (q.partB) {
+    html += `<div class="sub-q" style="margin-top:18px;padding-top:14px;border-top:1px dashed var(--rule)">
+      <div class="sub-q-label"><span class="alpha">(b)</span></div>
+      <div class="sub-q-text">${q.partB.intro}</div>`;
+    q.partB.steps.forEach((s, i) => {
+      html += `<div class="ssq-row" style="margin-left:28px"><span class="ssq-num">${i+1}.</span><span>${s}</span></div>`;
+    });
+    html += `</div>`;
+  }
+
+  html += `</div></div>`;
+  return html;
+}
+
+function renderTable(t, marginLeft) {
+  let html = `<div style="margin-left:${marginLeft};overflow-x:auto;margin-top:10px;margin-bottom:10px">
+    <table class="q-table"><thead><tr>`;
+  t.headers.forEach(h => { html += `<th>${h}</th>`; });
+  html += `</tr></thead><tbody>`;
+  t.rows.forEach(row => {
+    html += `<tr>`;
+    row.forEach(cell => { html += `<td>${cell}</td>`; });
+    html += `</tr>`;
+  });
+  html += `</tbody></table></div>`;
+  return html;
+}
+
+// ══════════════════════════════════════════
+// TIMER
+// ══════════════════════════════════════════
+function startTimer(key) {
+  updateTimerDisplay();
+  timerInterval = setInterval(() => {
+    secondsLeft--;
+    // save every 30s
+    if (secondsLeft % 30 === 0) {
+      const st = loadState();
+      if (st.students && st.students[key]) {
+        st.students[key].secondsLeft = secondsLeft;
+        saveState(st);
+      }
+    }
+    updateTimerDisplay();
+    if (secondsLeft <= 0) endExam("timeout", key);
+  }, 1000);
+}
+
+function updateTimerDisplay() {
+  const h = Math.floor(secondsLeft / 3600);
+  const m = Math.floor((secondsLeft % 3600) / 60);
+  const s = secondsLeft % 60;
+  const str = `${pad(h)}:${pad(m)}:${pad(s)}`;
+  const el = document.getElementById("timer-val");
+  el.textContent = str;
+  el.classList.toggle("danger", secondsLeft <= 300);
+}
+
+function pad(n) { return String(n).padStart(2,"0"); }
+
+// ══════════════════════════════════════════
+// END EXAM
+// ══════════════════════════════════════════
+function endExam(reason, key) {
+  clearInterval(timerInterval);
+  examActive = false;
+  document.removeEventListener("visibilitychange", onVisibilityChange);
+
+  const st = loadState();
+  if (st.students && st.students[key]) {
+    st.students[key].secondsLeft = 0;
+    st.students[key].terminated = (reason === "tabs");
+    saveState(st);
+  }
+
+  if (reason === "tabs") {
+    document.getElementById("overlay-closed").classList.add("active");
+  } else {
+    showEnded(
+      currentStudent.name,
+      currentStudent.cls,
+      SETS[currentStudent.setIndex].label,
+      "Time Elapsed"
+    );
+  }
+}
+
+function showEnded(name, cls, setLabel, reason) {
+  showPage("page-ended");
+  document.getElementById("ended-info").innerHTML =
+    `<strong>${name}</strong> &nbsp;|&nbsp; Class: ${cls}<br>
+     Question Set: ${setLabel} &nbsp;|&nbsp; Status: ${reason}`;
+}
+
+// ══════════════════════════════════════════
+// LOGOUT FUNCTION
+// ══════════════════════════════════════════
+function logout() {
+  // Clear exam state
+  examActive = false;
+  clearInterval(timerInterval);
+  document.removeEventListener("visibilitychange", onVisibilityChange);
+  
+  // Reset tab switch count
+  tabSwitchCount = 0;
+  
+  // Close any open overlays
+  document.getElementById("overlay-tab").classList.remove("active");
+  document.getElementById("overlay-closed").classList.remove("active");
+  
+  // Clear current student data
+  currentStudent = null;
+  
+  // Reset timer display
+  secondsLeft = 90 * 60;
+  updateTimerDisplay();
+  
+  // Clear input fields
+  document.getElementById("inp-name").value = "";
+  document.getElementById("inp-class").value = "";
+  document.getElementById("login-err").style.display = "none";
+  
+  // Show login page
+  showPage("page-login");
+}
+
+// ══════════════════════════════════════════
+// ANTI-TAB SWITCHING
+// ══════════════════════════════════════════
+function setupAntiTab() {
+  document.addEventListener("visibilitychange", onVisibilityChange);
+}
+
+function onVisibilityChange() {
+  if (!examActive) return;
+  if (document.hidden) {
+    tabSwitchCount++;
+    if (tabSwitchCount >= MAX_TAB_WARNINGS) {
+      endExam("tabs", currentStudent.key);
+    } else {
+      const ov = document.getElementById("overlay-tab");
+      const remaining = MAX_TAB_WARNINGS - tabSwitchCount;
+      document.getElementById("tab-warn-count").textContent =
+        `Warning ${tabSwitchCount} of ${MAX_TAB_WARNINGS - 1}. ${remaining} more switch${remaining > 1 ? 'es' : ''} will terminate your session.`;
+      ov.classList.add("active");
+    }
+  } else {
+    document.getElementById("overlay-tab").classList.remove("active");
+  }
+}
+
+// ══════════════════════════════════════════
+// PAGE SWITCHING
+// ══════════════════════════════════════════
+function showPage(id) {
+  document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
+  document.getElementById(id).classList.add("active");
+}
+
+// ══════════════════════════════════════════
+// RIGHT-CLICK & DEVTOOLS DETERRENCE
+// ══════════════════════════════════════════
+document.addEventListener("contextmenu", e => { if (examActive) e.preventDefault(); });
+document.addEventListener("keydown", e => {
+  if (!examActive) return;
+  // block F12, Ctrl+Shift+I/J/U, Ctrl+U, Ctrl+C (copy)
+  if (e.key === "F12" ||
+      (e.ctrlKey && e.shiftKey && ["I","J","C"].includes(e.key.toUpperCase())) ||
+      (e.ctrlKey && e.key.toUpperCase() === "U")) {
+    e.preventDefault();
+  }
+});
+</script>
+</body>
+</html>
