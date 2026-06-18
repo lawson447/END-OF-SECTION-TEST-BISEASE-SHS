@@ -24,7 +24,7 @@
   <div class="login-wrap">
     <div class="login-card">
       <h2>Student Identification</h2>
-      <p class="sub">Enter your details to begin the examination. Ensure your name and class are correct before proceeding.</p>
+      <p class="sub">Enter your details to begin the Test. Ensure your name and class are correct before proceeding.</p>
 
       <div class="field">
         <label for="inp-name">Full Name</label>
@@ -32,19 +32,19 @@
       </div>
       <div class="field">
         <label for="inp-class">Class</label>
-        <input type="text" id="inp-class" placeholder="e.g. Form 1A" autocomplete="off">
+        <input type="text" id="inp-class" placeholder="e.g. Form 1A or Form 2A" autocomplete="off">
       </div>
 
       <div id="login-err" class="err-msg">⚠ Please enter both your full name and class.</div>
 
-      <button class="btn-start" onclick="startExam()">Start Exam →</button>
+      <button class="btn-start" onclick="startExam()">Start Test →</button>
 
       <div class="notice">
         <strong>Important Instructions:</strong><br>
         • Duration: <strong>1 Hour 30 Minutes</strong><br>
         • Answer <strong>All</strong> questions from Section A and <strong>All</strong> from Section B.<br>
         • Do <strong>not</strong> switch browser tabs — this is monitored.<br>
-        • The exam closes automatically when time expires.
+        • The exam closes automatically when the time expires.
       </div>
     </div>
   </div>
@@ -105,7 +105,7 @@
   <h2>Tab Switch Detected</h2>
   <p>You navigated away from this examination window. This action has been recorded. Return focus to this window to continue your examination.</p>
   <p class="warn" id="tab-warn-count">Warning 1 of 3</p>
-  <button class="logout-btn" style="margin-top:20px; padding:10px 30px; font-size:1rem;" onclick="logout()">Exit Exam</button>
+  <button class="logout-btn" style="margin-top:20px; padding:10px 30px; font-size:1rem;" onclick="logout()">Exit Test</button>
 </div>
 
 <!-- ══════════════ OVERLAY: EXAM CLOSED ══════════════ -->
