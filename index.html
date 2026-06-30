@@ -169,16 +169,16 @@ const SECTION_A = {
       {
         alpha: "(a)", label: "Kofi needs to choose the correct data types for each piece of information.",
         subs: [
-          { roman: "(i)", text: "Identify an appropriate Python data type (<code>int</code>, <code>float</code>, <code>str</code>, <code>bool</code>) for each of the following fields: student name, age, GPA, and honour roll status.", marks: "2 marks" },
+          { roman: "(i)", text: "Identify an appropriate Python data type (<code>int</code>, <code>float</code>, <code>str</code>, <code>bool</code>) for each of the following fields: student name, age, price, and honour roll status.", marks: "2 marks" },
           { roman: "(ii)", text: "Write Python assignment statements for ONE student record using the four data types above.", marks: "2 marks" },
-          { roman: "(iv)", text: "Define the term: <strong>Variable</strong>.", marks: "2 marks" }
+          { roman: "(iv)", text: "Define the term: <strong>Variable</strong> as used in computing.", marks: "2 marks" }
         ]
       },
       {
         alpha: "(b)", label: "Kofi learns about data structures to help organize the student records.",
         subs: [
           { roman: "(i)", text: "Define the term <strong>data structure</strong> and explain why it is important in computing.", marks: "3 marks" },
-          { roman: "(ii)", text: "Using a diagram or description, differentiate between a <strong>linear</strong> and a <strong>non-linear</strong> data structure. Give TWO (2) examples of each.", marks: "6 marks" },
+          { roman: "(ii)", text: "Using a diagram, differentiate between a <strong>linear</strong> and a <strong>non-linear</strong> data structure. Give TWO (2) examples of each.", marks: "6 marks" },
           { roman: "(iv)", text: "List FOUR (4) common operations that can be performed on data structures.", marks: "2 marks" }
         ]
       },
@@ -221,7 +221,7 @@ const SECTION_A = {
     parts: [
       {
         alpha: "(a)", label: "",
-        subs: [
+        subs:  [
           { roman: "(i)", text: "Define the term <strong>array data structure</strong>.", marks: "2 marks" },
           { roman: "(ii)", text: "Akosua declares the following array:<br><code>class_scores = [72, 85, 91, 60, 78, 88, 55, 94, 67, 80]</code><br>State the <strong>index</strong> of the value 91.", marks: "1 mark" },
           { roman: "(iii)", text: "Write a Python statement to update the <strong>third element</strong> of <code>cs_scores</code> to 95.", marks: "1 mark" },
@@ -249,7 +249,7 @@ const SECTION_A = {
               ]
             }
           },
-          { roman: "(i)", text: "Write the Python code to implement the above 2D array and name it <code>all_scores</code>.", marks: "2 marks" },
+          { roman: "(i)", text: "Write the Python code to implement the above 2D array and name it <code>all_scores</code>. use comment to show the subject", marks: "2 marks" },
           { roman: "(ii)", text: "Using index notation, write the Python statement to access <strong>Student 3's Mathematics score</strong>.", marks: "2 marks" },
           { roman: "(iii)", text: "Student 4's English score was incorrectly entered as 65. The correct score is 71. Write the Python statement to update this value in the 2D array.", marks: "2 marks" },
           { roman: "(iv)", text: "State TWO (2) advantages and ONE (1) disadvantage of using an array to store these scores.", marks: "3 marks" }
@@ -295,7 +295,7 @@ const SECTION_B = {
   Q1: {
     num: "Question 1",
     marks: "20 marks",
-    intro: `Nana Yaa's second task is to write a Python program that generates and displays the multiplication table for a number entered by the user. The multiplication table should display results from 1 to 12.`,
+    intro: `Your junior sister in Basic School has been asked to write a program that displays the multiplication table of a number. As a student of Computing, help her by writing a Python program that accepts a number from the user and displays its multiplication table from 1 to 12.`,
     requirements: [
       "Use <code>input()</code> to prompt the user to enter a number.",
       "Use a <code>for</code> loop with the <code>range()</code> function to iterate from 1 to 12.",
@@ -308,7 +308,7 @@ const SECTION_B = {
   Q2: {
     num: "Question 2",
     marks: "20 marks",
-    intro: `Nana Yaa's third task is to write a Python program for the company's payroll system. The program should calculate an employee's net salary after tax deductions based on the following Ghana Revenue Authority (GRA) inspired tax bands:`,
+    intro: `A company requires a simple payroll system to compute the net salary of its employees after tax deductions. You are required to write a Python program to assist in this calculation:`,
     table: {
       headers: ["Monthly Gross Salary (GH₵)", "Tax Rate"],
       rows: [
@@ -331,7 +331,7 @@ const SECTION_B = {
   Q3: {
     num: "Question 3",
     marks: "20 marks",
-    intro: `Nana Yaa must write a Python program that asks a student to enter their exam score (0–100) and outputs the corresponding grade and remark using the WAEC grading system below:`,
+    intro: `A student is required to write a Python program that prompts the user to enter an examination score between 0 and 100. The program should then determine and display the corresponding grade and remark based on the WAEC grading system below:`,
     table: {
       headers: ["Score Range", "Grade", "Remark"],
       rows: [
@@ -393,7 +393,7 @@ function saveState(s) {
 // GLOBALS
 // ══════════════════════════════════════════
 let timerInterval = null;
-let secondsLeft = 90 * 60; // 1h 30m
+let secondsLeft = 100 * 60; // 1h 30m
 let tabSwitchCount = 0;
 const MAX_TAB_WARNINGS = 3;
 let examActive = false;
@@ -434,16 +434,16 @@ function startExam() {
     const totalStudents = state.totalCount || 0;
     
     // Determine set based on totalStudents count
-    if (totalStudents < 20) {
+    if (totalStudents < 15) {
       setIndex = 0; // Set A: Q1,Q3 and Q2,Q3
-    } else if (totalStudents < 40) {
+    } else if (totalStudents < 30) {
       setIndex = 1; // Set B: Q2,Q3 and Q2,Q1
     } else {
       setIndex = 2; // Set C: Q1,Q2 and Q2,Q1
     }
 
     if (!state.students) state.students = {};
-    state.students[key] = { setIndex, secondsLeft: 90 * 60, terminated: false };
+    state.students[key] = { setIndex, secondsLeft: 100 * 60, terminated: false };
     state.totalCount = (state.totalCount || 0) + 1;
     saveState(state);
   }
@@ -452,7 +452,7 @@ function startExam() {
 
   // restore time
   const st = loadState();
-  secondsLeft = st.students[key].secondsLeft || 90 * 60;
+  secondsLeft = st.students[key].secondsLeft || 100 * 60;
 
   // populate top bar
   document.getElementById("bar-name").textContent  = name;
@@ -491,7 +491,7 @@ function renderExam(setIndex) {
   });
 
   // ─ SECTION B ─
-  html += sectionLabel("SECTION B – PRACTICAL PROGRAMMING", "Answer TWO questions", "40 Marks");
+  html += sectionLabel("SECTION B – PRACTICAL PROGRAMMING", "Answer all questions", "40 Marks");
   set.secB.forEach(qKey => {
     html += renderSectionBQuestion(SECTION_B[qKey]);
   });
