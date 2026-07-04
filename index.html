@@ -393,7 +393,7 @@ function saveState(s) {
 // GLOBALS
 // ══════════════════════════════════════════
 let timerInterval = null;
-let secondsLeft = 100 * 60; // 1h 30m
+let secondsLeft = 150 * 60; // 1h 30m
 let tabSwitchCount = 0;
 const MAX_TAB_WARNINGS = 3;
 let examActive = false;
@@ -443,7 +443,7 @@ function startExam() {
     }
 
     if (!state.students) state.students = {};
-    state.students[key] = { setIndex, secondsLeft: 100 * 60, terminated: false };
+    state.students[key] = { setIndex, secondsLeft: 150 * 60, terminated: false };
     state.totalCount = (state.totalCount || 0) + 1;
     saveState(state);
   }
@@ -452,7 +452,7 @@ function startExam() {
 
   // restore time
   const st = loadState();
-  secondsLeft = st.students[key].secondsLeft || 100 * 60;
+  secondsLeft = st.students[key].secondsLeft || 150 * 60;
 
   // populate top bar
   document.getElementById("bar-name").textContent  = name;
@@ -485,7 +485,7 @@ function renderExam(setIndex) {
   let html = "";
 
   // ─ SECTION A ─
-  html += sectionLabel("SECTION A – THEORY", "Answer TWO questions", "60 Marks");
+  html += sectionLabel("SECTION A – THEORY", "Answer all questions", "60 Marks");
   set.secA.forEach(qKey => {
     html += renderSectionAQuestion(SECTION_A[qKey]);
   });
