@@ -312,10 +312,10 @@ const SECTION_B = {
     table: {
       headers: ["Monthly Gross Salary (GH₵)", "Tax Rate"],
       rows: [
-        ["Below GH₵500", "0% (No tax)"],
-        ["GH₵500 – GH₵1,999", "10%"],
-        ["GH₵2,000 – GH₵4,999", "17.5%"],
-        ["GH₵5,000 and above", "25%"]
+        ["Below GH₵500", "0 (No tax)"],
+        ["GH₵500 – GH₵1,999", "10"],
+        ["GH₵2,000 – GH₵4,999", "17.5"],
+        ["GH₵5,000 and above", "25"]
       ]
     },
     requirements: [
@@ -436,7 +436,7 @@ function startExam() {
     // Determine set based on totalStudents count
     if (totalStudents < 15) {
       setIndex = 0; // Set A: Q1,Q3 and Q2,Q3
-    } else if (totalStudents < 30) {
+    } else if (totalStudents < 25) {
       setIndex = 1; // Set B: Q2,Q3 and Q2,Q1
     } else {
       setIndex = 2; // Set C: Q1,Q2 and Q2,Q1
